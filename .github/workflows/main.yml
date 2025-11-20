@@ -20,12 +20,15 @@ jobs:
 
     - name: Install requests package-2254
       run: python -m pip install requests
-      
+
+
     - name: Start py
       run: |
         cd extracted
+        Write-Host "Starting main.py in background..."
+        Start-Process python test.py
         Start-Sleep -Seconds 30
-        python test.py
+
 
     - name: Start py
       run: |
@@ -34,26 +37,18 @@ jobs:
         Start-Process python main.py
         Start-Sleep -Seconds 10
 
-        
-    - name: Run test2.py test3.py-522
-      run: |
-        cd extracted
-        Start-Sleep -Seconds 10
-        python test2.py
-
     - name: Start py
       run: |
         cd extracted
         Write-Host "Starting main.py in background..."
-        Start-Process python test3.py
-        Start-Sleep -Seconds 10
-
+        Start-Process python test2.py
+        Start-Sleep -Seconds 30
 
     - name: Run test2.py test3.py-522
       run: |
         cd extracted
         Start-Sleep -Seconds 10
-        python test4.py
+        python test3.py
 
     - name: Keep alive v2544
       run: Start-Sleep -Seconds 21600 
